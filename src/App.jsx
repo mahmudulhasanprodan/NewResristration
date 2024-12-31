@@ -1,7 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Resistration from './Resistration/Resistration'
 
 const App = () => {
+const [InputData,setInputData]= useState({
+  FirstName: "",
+  Lastname: "",
+  Email: "",
+  Password: "",
+  RepeatPassword: "",
+  Gender: "",
+
+})
+
+// HandleInput function start Here
+
+const HandleInput = (e) => {
+   setInputData({
+        ...InputData,
+        [e.target.id]: e.target.value,
+   })
+   
+}
+
+console.log(InputData);
+
   return (
     <>
       <div className="bg-blue-200">
@@ -21,6 +43,7 @@ const App = () => {
                     InpuPlaceholder={"Enter Your First Name"}
                     InputId={"FirstName"}
                     InputName={"FirstName"}
+                    OnclickValue={HandleInput}
                     className={
                       "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
                     }
@@ -33,6 +56,7 @@ const App = () => {
                     InpuPlaceholder={"Enter Your Last Name"}
                     InputId={"Lastname"}
                     InputName={"Lastname"}
+                    OnclickValue={HandleInput}
                     className={
                       "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
                     }
@@ -45,6 +69,7 @@ const App = () => {
                     InpuPlaceholder={"Enter Your Email"}
                     InputId={"Email"}
                     InputName={"Email"}
+                    OnclickValue={HandleInput}
                     className={
                       "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
                     }
@@ -57,6 +82,7 @@ const App = () => {
                     InpuPlaceholder={"Enter Your Password"}
                     InputId={"Password"}
                     InputName={"Password"}
+                    OnclickValue={HandleInput}
                     className={
                       "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
                     }
@@ -69,6 +95,7 @@ const App = () => {
                     InpuPlaceholder={"Enter Your Repeat Password"}
                     InputId={"RepeatPassword"}
                     InputName={"RepeatPassword"}
+                    OnclickValue={HandleInput}
                     className={
                       "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
                     }
@@ -83,6 +110,7 @@ const App = () => {
                   <select
                     name="Gender"
                     id="Gender"
+                    onChange={HandleInput}
                     className="w-[350px] cursor-pointer py-1"
                   >
                     <option value="Select">Please Select</option>
