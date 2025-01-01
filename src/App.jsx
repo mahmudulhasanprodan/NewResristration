@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Resistration from './Resistration/Resistration'
 
 const App = () => {
+  
 const [InputData,setInputData]= useState({
   FirstName: "",
   Lastname: "",
@@ -10,7 +11,18 @@ const [InputData,setInputData]= useState({
   RepeatPassword: "",
   Gender: "",
 
-})
+});
+
+const [InputDataError,setInputDataError]= useState({
+  FirstNameErr: "",
+  LastnameErr: "",
+  EmailErr: "",
+  PasswordErr: "",
+  RepeatPasswordErr: "",
+  PassNotmatchErr: "",
+  GenderErr: "",
+
+});
 
 // HandleInput function start Here
 
@@ -22,7 +34,51 @@ const HandleInput = (e) => {
    
 }
 
-console.log(InputData);
+// HandleSubmit function start here
+ const HandleSubmit = () => {
+    const { FirstName, Lastname, Email, Password, RepeatPassword, Gender } =
+      InputData;
+    if(!FirstName){
+      setInputDataError({
+        ...InputDataError,
+        FirstNameErr:"First Name Missing",  
+      })
+    }else if(!Lastname){
+      setInputDataError({
+        ...InputDataError,
+        LastnameErr:"Last Name Missing",     
+      })
+    }else if(!Email){
+      setInputDataError({
+        ...InputDataError,    
+        EmailErr:"Email Missing",    
+      })
+    }else if(!Password){
+      setInputDataError({
+        ...InputDataError,    
+        PasswordErr:"Password Missing",    
+      })
+    }else if(!RepeatPassword){
+      setInputDataError({
+        ...InputDataError,       
+        RepeatPasswordErr:"Repeat Password Missing",  
+      })
+    }else if(Password !== RepeatPassword){
+      setInputDataError({
+        ...InputDataError,       
+        PassNotmatchErr:"Password Not Match",   
+      })
+    }else if(!Gender){
+      setInputDataError({
+        ...InputDataError,        
+        GenderErr:"Gender Missing",  
+      })
+    }else{
+      console.log("Everything is Ok");
+      
+    }
+
+ };
 
   return (
     <>
@@ -44,10 +100,17 @@ console.log(InputData);
                     InputId={"FirstName"}
                     InputName={"FirstName"}
                     OnclickValue={HandleInput}
-                    className={
-                      "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
-                    }
+                    className={`${
+                      InputDataError.FirstNameErr
+                        ? "border-2 border-red-500 py-1 w-[350px] pl-2 rounded-md"
+                        : "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
+                    }`}
                   />
+                  {InputDataError.FirstNameErr && (
+                    <p className="pl-6 text-red-500">
+                      {InputDataError.FirstNameErr}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-2">
                   <Resistration
@@ -61,6 +124,11 @@ console.log(InputData);
                       "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
                     }
                   />
+                  {InputDataError.LastnameErr && (
+                    <p className="pl-6 text-red-500">
+                      {InputDataError.LastnameErr}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-2">
                   <Resistration
@@ -120,7 +188,12 @@ console.log(InputData);
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-center">
-                <button className="w-[350px] py-2 bg-green-400 font-bold text-white rounded-md">Submit</button>
+                <button
+                  className="w-[350px] py-2 bg-green-400 font-bold text-white rounded-md"
+                  onClick={HandleSubmit}
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </div>
