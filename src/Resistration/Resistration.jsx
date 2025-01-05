@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Resistration = ({InputType,InpuPlaceholder,InputId,InputName,labelInput,className,OnclickValue}) => {
+const Resistration = ({InputType,InpuPlaceholder,InputId,InputName,labelInput,className,OnclickValue,OnValue}) => {
   return (
     <>
       <div className="container">
@@ -17,6 +17,7 @@ const Resistration = ({InputType,InpuPlaceholder,InputId,InputName,labelInput,cl
                 id={InputId}
                 name={InputName}
                 onChange={OnclickValue}
+                value={OnValue}
               />
             </form>
           </div>

@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
 import Resistration from './Resistration/Resistration'
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from '../Firebase/FirebaseSDK';
+import { collection, addDoc } from "firebase/firestore"; 
 
 const App = () => {
+  const auth = getAuth();
+  console.log(auth);
   
 const [InputData,setInputData]= useState({
   FirstName: "",
@@ -24,6 +29,7 @@ const [InputDataError,setInputDataError]= useState({
 
 });
 
+
 // HandleInput function start Here
 
 const HandleInput = (e) => {
@@ -41,40 +47,107 @@ const HandleInput = (e) => {
     if(!FirstName){
       setInputDataError({
         ...InputDataError,
-        FirstNameErr:"First Name Missing",  
-      })
+        LastnameErr: "",
+        EmailErr: "",
+        PasswordErr: "",
+        RepeatPasswordErr: "",
+        PassNotmatchErr: "",
+        GenderErr: "",
+        FirstNameErr: "First Name Missing",
+      });
     }else if(!Lastname){
       setInputDataError({
         ...InputDataError,
+        FirstNameErr: "",
+        EmailErr: "",
+        PasswordErr: "",
+        RepeatPasswordErr: "",
+        PassNotmatchErr: "",
+        GenderErr: "",
         LastnameErr:"Last Name Missing",     
       })
     }else if(!Email){
       setInputDataError({
-        ...InputDataError,    
+        ...InputDataError, 
+        FirstNameErr: "",
+        LastnameErr: "",
+        PasswordErr: "",
+        RepeatPasswordErr: "",
+        PassNotmatchErr: "",
+        GenderErr: "",   
         EmailErr:"Email Missing",    
       })
     }else if(!Password){
       setInputDataError({
-        ...InputDataError,    
+        ...InputDataError, 
+        FirstNameErr: "",
+        LastnameErr: "",
+        EmailErr: "",
+        RepeatPasswordErr: "",
+        PassNotmatchErr: "",
+        GenderErr: "",   
         PasswordErr:"Password Missing",    
       })
     }else if(!RepeatPassword){
       setInputDataError({
-        ...InputDataError,       
+        ...InputDataError,
+        FirstNameErr: "",
+        LastnameErr: "",
+        EmailErr: "",
+        PasswordErr: "",
+        PassNotmatchErr: "",
+        GenderErr: "",       
         RepeatPasswordErr:"Repeat Password Missing",  
       })
     }else if(Password !== RepeatPassword){
       setInputDataError({
-        ...InputDataError,       
+        ...InputDataError,
+        FirstNameErr: "",
+        LastnameErr: "",
+        EmailErr: "",
+        PasswordErr: "",
+        RepeatPasswordErr: "",
+        GenderErr: "",       
         PassNotmatchErr:"Password Not Match",   
       })
     }else if(!Gender){
       setInputDataError({
-        ...InputDataError,        
+        ...InputDataError,
+        FirstNameErr: "",
+        LastnameErr: "",
+        EmailErr: "",
+        PasswordErr: "",
+        RepeatPasswordErr: "",
+        PassNotmatchErr: "",       
         GenderErr:"Gender Missing",  
       })
     }else{
-      console.log("Everything is Ok");
+        
+      // create useer with firebase
+      createUserWithEmailAndPassword(auth,InputData.Email,InputData.Password).then((userCredential) => {
+        console.log("resistration Done",userCredential);
+        
+      }).then(() => {
+        addDoc(collection(db, "signUp/"), InputData)
+          .then((signData) => {
+            console.log(signData);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }).catch((err) => {
+        console.log(err);
+        
+      }).finally(() => {
+        setInputData({
+          FirstName: "",
+          Lastname: "",
+          Email: "",
+          Password: "",
+          RepeatPassword: "",
+          Gender: "",
+        })
+      });
       
     }
 
@@ -99,6 +172,7 @@ const HandleInput = (e) => {
                     InpuPlaceholder={"Enter Your First Name"}
                     InputId={"FirstName"}
                     InputName={"FirstName"}
+                    OnValue={InputData.FirstName}
                     OnclickValue={HandleInput}
                     className={`${
                       InputDataError.FirstNameErr
@@ -119,10 +193,13 @@ const HandleInput = (e) => {
                     InpuPlaceholder={"Enter Your Last Name"}
                     InputId={"Lastname"}
                     InputName={"Lastname"}
+                    OnValue={InputData.Lastname}
                     OnclickValue={HandleInput}
-                    className={
-                      "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
-                    }
+                    className={`${
+                      InputDataError.LastnameErr
+                        ? "border-2 border-red-500 py-1 w-[350px] pl-2 rounded-md"
+                        : "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
+                    }`}
                   />
                   {InputDataError.LastnameErr && (
                     <p className="pl-6 text-red-500">
@@ -137,11 +214,19 @@ const HandleInput = (e) => {
                     InpuPlaceholder={"Enter Your Email"}
                     InputId={"Email"}
                     InputName={"Email"}
+                    OnValue={InputData.Email}
                     OnclickValue={HandleInput}
-                    className={
-                      "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
-                    }
+                    className={`${
+                      InputDataError.EmailErr
+                        ? "border-2 border-red-500 py-1 w-[350px] pl-2 rounded-md"
+                        : "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
+                    }`}
                   />
+                  {InputDataError.EmailErr && (
+                    <p className="pl-6 text-red-500">
+                      {InputDataError.EmailErr}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-2">
                   <Resistration
@@ -150,11 +235,19 @@ const HandleInput = (e) => {
                     InpuPlaceholder={"Enter Your Password"}
                     InputId={"Password"}
                     InputName={"Password"}
+                    OnValue={InputData.Password}
                     OnclickValue={HandleInput}
-                    className={
-                      "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
-                    }
+                    className={`${
+                      InputDataError.PasswordErr
+                        ? "border-2 border-red-500 py-1 w-[350px] pl-2 rounded-md"
+                        : "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
+                    }`}
                   />
+                  {InputDataError.PasswordErr && (
+                    <p className="pl-6 text-red-500">
+                      {InputDataError.PasswordErr}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-2">
                   <Resistration
@@ -163,11 +256,26 @@ const HandleInput = (e) => {
                     InpuPlaceholder={"Enter Your Repeat Password"}
                     InputId={"RepeatPassword"}
                     InputName={"RepeatPassword"}
+                    OnValue={InputData.RepeatPassword}
                     OnclickValue={HandleInput}
-                    className={
-                      "border-2 border-gray-500 py-1 w-[350px] pl-2 rounded-md"
-                    }
+                    className={`${
+                      InputDataError.RepeatPasswordErr
+                        ? "border-2 border-red-500 py-1 w-[350px] pl-2 rounded-md"
+                        : "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
+                    }`}
                   />
+                  {InputDataError.RepeatPasswordErr && (
+                    <p className="pl-6 text-red-500">
+                      {InputDataError.RepeatPasswordErr}
+                    </p>
+                  )}
+                  <div>
+                    {InputDataError.PassNotmatchErr && (
+                      <p className="pl-6 text-red-500">
+                        {InputDataError.PassNotmatchErr}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="mt-3">
@@ -178,13 +286,25 @@ const HandleInput = (e) => {
                   <select
                     name="Gender"
                     id="Gender"
+                    value={InputData.Gender}
                     onChange={HandleInput}
-                    className="w-[350px] cursor-pointer py-1"
+                    className={`${
+                      InputDataError.GenderErr
+                        ? "border-2 border-red-500 py-1 w-[350px] pl-2 rounded-md"
+                        : "border-2 border-gray-500 py-1  w-[350px] pl-2 rounded-md"
+                    }`}
                   >
                     <option value="Select">Please Select</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
+                </div>
+                <div>
+                  {InputDataError.GenderErr && (
+                    <p className="pl-6 text-red-500">
+                      {InputDataError.GenderErr}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="mt-5 flex items-center justify-center">
